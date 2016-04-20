@@ -5,13 +5,13 @@ def pifagor(sides)
 end
 
 puts "Первая сторона"
-sides << gets.chomp.to_i
+sides << gets.chomp.to_f
 
 puts "Вторая сторона"
-sides << gets.chomp.to_i
+sides << gets.chomp.to_f
 
 puts "Третья сторона"
-sides << gets.chomp.to_i
+sides << gets.chomp.to_f
 
 sides.sort!
 
