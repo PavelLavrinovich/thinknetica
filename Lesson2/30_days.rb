@@ -13,4 +13,4 @@ months = {
   December: 31
 }
 
-months.select { |month, days| days == 30 }.each_key { |month| puts month }
+months.each { |month, days| puts month if days == 30 }

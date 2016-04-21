@@ -7,10 +7,8 @@ vowels = {
   y: 0
 }
 
-current_index = 1
-(:a..:z).each do |letter|
-  vowels[letter] = current_index unless vowels[letter].nil?
-  current_index += 1
+(:a..:z).each_with_index do |letter, index|
+  vowels[letter] = index + 1 unless vowels[letter].nil?
 end
 
 puts vowels

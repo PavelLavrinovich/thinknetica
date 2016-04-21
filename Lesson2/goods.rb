@@ -1,9 +1,11 @@
 goods = {}
 
-puts "Item name"
-name = gets.chomp.to_sym
+loop do
+  puts "Item name"
+  name = gets.chomp.to_sym
 
-while name != :stop
+  break if name == :stop
+
   puts "Priсe"
   priсe = gets.chomp.to_f
 
@@ -11,9 +13,6 @@ while name != :stop
   quantity = gets.chomp.to_f
 
   goods[name] = { priсe => quantity }
-
-  puts "Item name"
-  name = gets.chomp.to_sym
 end
 
 total = 0
