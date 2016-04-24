@@ -1,38 +1,41 @@
 class Train
-  attr_accessor :carriages, :speed, :current_station_id
-  attr_reader :number, :type, :route
+  attr_reader :number, :type, :route, :carriages, :speed
 
   def initialize(number, type, carriages)
     @number = number
     @type = type
     @carriages = carriages
 
-    @speed = 0
+    @speed = initial_speed
   end
 
   def gain_speed
-    self.speed += 10
+    self.speed += gain_speed_difference
   end
 
   def stop
-    self.speed = 0
+    self.speed = stop_speed
   end
 
-  def add_carriage
-    self.carriages += 1 if is_stopped?
+  def add_carriage(carriage)
+    self.carriages << carriage if is_stopped?
   end
 
-  def delete_carriage
-    self.carriages -= 1 if is_stopped?
+  def delete_carriage(carriage)
+    self.carriages.delete(carriage) if is_stopped?
   end
 
   def route=(route)
     @route = route
-    self.current_station_id = 0
+    self.current_station_id = start_station_id
   end
 
   def go
     route.stations.each { |station| go_to_the_next_station } if at_start?
+  end
+
+  def go_to_the_next_station
+    go_to_the_next_station! if has_next?
   end
 
   def current_station
@@ -47,16 +50,21 @@ class Train
     route.stations[current_station_id - 1] if has_previous?
   end
 
-  private
+  def is_stopped?
+    speed.zero?
+  end
 
-  def go_to_the_next_station
-    if has_next?
-      gain_speed
-      current_station.send_out(self)
-      self.current_station_id += 1
-      current_station.take(self)
-      stop
-    end
+  protected # Train has sublasses, all methods are just helpers for main methods
+
+  attr_accessor :current_station_id # Inner system field
+  attr_writer :speed # You should change speed only by methods
+
+  def go_to_the_next_station!
+    gain_speed
+    current_station.send_out(self)
+    self.current_station_id += 1
+    current_station.take(self)
+    stop
   end
 
   def at_start?
@@ -71,7 +79,19 @@ class Train
     current_station_id > 0
   end
 
-  def is_stopped?
-    speed.zero?
+  def initial_speed
+    0
+  end
+
+  def stop_speed
+    0
+  end
+
+  def gain_speed_difference
+    10
+  end
+
+  def start_station_id
+    0
   end
 end

@@ -1,6 +1,7 @@
 require "./station"
 require "./route"
 require "./train"
+require "./carriage"
 
 puts "Station has name"
 p station = Station.new("Station1")
@@ -8,8 +9,8 @@ station2 = Station.new("Station2")
 station3 = Station.new("Station3")
 
 puts "Train has number, type and carriages"
-p train1 = Train.new(42, "Type1", 5)
-p train2 = Train.new(43, "Type2", 6)
+p train1 = Train.new(42, "Type1", [Carriage.new, Carriage.new, Carriage.new])
+p train2 = Train.new(43, "Type2", [Carriage.new, Carriage.new])
 
 puts "Station can take one train"
 station.take(train1)
@@ -57,16 +58,17 @@ puts "Train can display carriages"
 puts train1.carriages
 
 puts "Train can add/delete carriage"
-train1.add_carriage
+carriage = Carriage.new
+train1.add_carriage(carriage)
 puts train1.carriages
-train1.delete_carriage
+train1.delete_carriage(carriage)
 puts train1.carriages
 
 puts "Train can not add/delete carriage if it is moving"
 train1.gain_speed
-train1.add_carriage
+train1.add_carriage(carriage)
 puts train1.carriages
-train1.delete_carriage
+train1.delete_carriage(carriage)
 puts train1.carriages
 
 puts "Train can take a route"
