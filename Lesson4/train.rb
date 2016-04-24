@@ -21,7 +21,7 @@ class Train
     self.carriages << carriage if is_stopped?
   end
 
-  def delete_carriage(carriage)
+  def delete_carriage(carriage = self.carriages.last)
     self.carriages.delete(carriage) if is_stopped?
   end
 
@@ -39,7 +39,7 @@ class Train
   end
 
   def current_station
-    route.stations[current_station_id]
+    route.stations[current_station_id] if route
   end
 
   def next_station
@@ -61,9 +61,9 @@ class Train
 
   def go_to_the_next_station!
     gain_speed
-    current_station.send_out(self)
+    current_station.send_out(self) if current_station
     self.current_station_id += 1
-    current_station.take(self)
+    current_station.take(self) if current_station
     stop
   end
 
