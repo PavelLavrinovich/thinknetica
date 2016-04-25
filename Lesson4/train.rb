@@ -1,11 +1,11 @@
 class Train
-  attr_reader :number, :type, :route, :carriages, :speed
+  attr_reader :number, :type, :route, :carriages, :speed, :carriage_type
 
-  def initialize(number, type, carriages)
+  def initialize(number, type, carriages, carriage_type = Carriage)
     @number = number
     @type = type
     @carriages = carriages
-
+    @carriage_type = carriage_type
     @speed = initial_speed
   end
 
@@ -18,7 +18,7 @@ class Train
   end
 
   def add_carriage(carriage)
-    self.carriages << carriage if is_stopped?
+    self.carriages << carriage if is_stopped? && is_correct_carriage?(carriage)
   end
 
   def delete_carriage(carriage = self.carriages.last)
@@ -77,6 +77,10 @@ class Train
 
   def has_previous?
     current_station_id > 0
+  end
+
+  def is_correct_carriage?(carriage)
+    carriage.class == carriage_type
   end
 
   def initial_speed
