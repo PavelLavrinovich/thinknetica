@@ -40,6 +40,8 @@ class TrainConsole
     end
   end
 
+  private # TrainConsole hasn't subclasses, helper methods
+
   def help
     puts ""
     puts 'Input "exit" for exit'
@@ -109,8 +111,6 @@ class TrainConsole
     puts "I don't know this command: #{input}, but you can add it ;)"
   end
 
-  private # TrainConsole hasn't subclasses, helper methods
-
   def choose_station
     puts "Your stations"
     puts stations
@@ -156,9 +156,9 @@ class TrainConsole
   def get_train(number, type)
     case type
     when "cargo"
-      CargoTrain.new(number, type, [])
+      CargoTrain.new(number, [])
     when "passanger"
-      PassangerTrain.new(number, type, [])
+      PassangerTrain.new(number, [])
     else
       Train.new(number, type, [])
     end

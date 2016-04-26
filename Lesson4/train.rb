@@ -1,11 +1,10 @@
 class Train
-  attr_reader :number, :type, :route, :carriages, :speed, :carriage_type
+  attr_reader :number, :type, :route, :carriages, :speed
 
-  def initialize(number, type, carriages, carriage_type = Carriage)
+  def initialize(number, type, carriages)
     @number = number
     @type = type
     @carriages = carriages
-    @carriage_type = carriage_type
     @speed = initial_speed
   end
 
@@ -80,6 +79,15 @@ class Train
   end
 
   def is_correct_carriage?(carriage)
+    carriage_type =
+      case self.type
+      when "cargo"
+        CargoCarriage
+      when "passanger"
+        PassangerCarriage
+      else
+        Carriage
+      end
     carriage.class == carriage_type
   end
 
