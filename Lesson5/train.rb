@@ -1,4 +1,8 @@
+require "./manufacturer"
+
 class Train
+  include Manufacturer
+  include Instances
   attr_reader :number, :type, :route, :carriages, :speed
 
   def initialize(number, type, carriages)
@@ -6,6 +10,7 @@ class Train
     @type = type
     @carriages = carriages
     @speed = initial_speed
+    add
   end
 
   def gain_speed

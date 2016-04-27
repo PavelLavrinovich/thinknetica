@@ -8,12 +8,7 @@ require "./passanger_carriage"
 require "./route"
 
 class TrainConsole
-  attr_reader :stations, :trains
-
-  def initialize
-    @stations = []
-    @trains = []
-  end
+  attr_reader :trains
 
   def start
     loop do
@@ -56,7 +51,7 @@ class TrainConsole
 
   def create_station
     name = station_input
-    self.stations << Station.new(name)
+    Station.new(name)
     puts "Station with name: #{name} has been created."
   end
 
@@ -71,9 +66,10 @@ class TrainConsole
     if check_train_index?(index)
       puts "Wrong index"
     else
-      carriage = get_carriage(self.trains[index].type)
+      train = Train.find(index)
+      carriage = get_carriage(train.type)
 
-      self.trains[index].add_carriage(carriage)
+      train.add_carriage(carriage)
       puts "Carriage has been added"
     end
   end
@@ -81,10 +77,10 @@ class TrainConsole
   def delete_carriage
     index = choose_train
 
-    if self.trains[index].nil?
+    if check_train_index?(index)
       puts "Wrong index"
     else
-      self.trains[index].delete_carriage
+      Train.find(index).delete_carriage
       puts "Carriage has been deleted"
     end
   end
@@ -96,15 +92,15 @@ class TrainConsole
       puts "Wrong index"
     else
       station_index = choose_station
-      move_train!(train_index, station_index) unless check_station_indext?(station_index)
+      move_train!(train_index, station_index) unless check_station_index?(station_index)
     end
   end
 
   def display_stations
     index = choose_station
-
+    station = Station.find(index)
     puts "Station #{index}, Trains:"
-    puts self.stations[index].trains
+    puts station.trains unless station.nil?
   end
 
   def unknown_command
@@ -112,6 +108,7 @@ class TrainConsole
   end
 
   def choose_station
+    stations = Station.get_all
     puts "Your stations"
     puts stations
 
@@ -120,6 +117,7 @@ class TrainConsole
   end
 
   def choose_train
+    trains = Train.get_all
     puts "Your trains:"
     puts trains
 
@@ -131,7 +129,6 @@ class TrainConsole
     carriage = get_carriage(type)
     train = get_train(number, type)
     carriages_count.times { train.add_carriage(carriage) }
-    self.trains << train
     puts "Train with number #{number}, type #{type} has been created with #{carriages_count} carriages"
   end
 
@@ -176,17 +173,18 @@ class TrainConsole
   end
 
   def move_train!(train_index, station_index)
-    route = Route.new(self.trains[train_index].current_station, self.stations[station_index])
-    self.trains[train_index].route = route
-    self.trains[train_index].go
+    train = Train.find(train_index)
+    route = Route.new(train.current_station, Station.find(station_index))
+    train.route = route
+    train.go
     puts "Train went from #{route.from} to #{route.to}"
   end
 
-  def check_station_indext?(index)
-    self.stations[index].nil?
+  def check_station_index?(index)
+    Station.find(index).nil?
   end
 
   def check_train_index?(index)
-    self.trains[index].nil?
+    Train.find(index).nil?
   end
 end

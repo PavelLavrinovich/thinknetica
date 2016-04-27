@@ -1,9 +1,13 @@
+require "./instances"
+
 class Station
+  include Instances
   attr_reader :name, :trains
 
   def initialize(name)
     @name = name
     @trains = []
+    add
   end
 
   def take(train)
