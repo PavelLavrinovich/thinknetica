@@ -10,7 +10,8 @@ class Train
     @type = type
     @carriages = carriages
     @speed = initial_speed
-    add
+    self.class.instances = [] if self.class.instances.nil?
+    add(self)
   end
 
   def gain_speed

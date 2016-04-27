@@ -1,24 +1,25 @@
 module Instances
   module ClassMethods
+    attr_accessor :instances
+
     def get_all
-      InstanceMethods::get_all
+      self.instances
     end
 
     def find(id)
-      InstanceMethods::get_all[id]
+      self.instances[id]
     end
   end
 
   module InstanceMethods
     protected
-    @@instances = []
 
-    def self.get_all
-      @@instances
-    end
-
-    def add
-      @@instances << self
+    def add(instance)
+      type = self.class
+      while type.methods.include?(:instances)
+        type.instances << instance
+        type = type.superclass
+      end
     end
   end
 

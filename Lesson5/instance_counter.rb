@@ -1,19 +1,13 @@
 module InstanceCounter
   module ClassMethods
-    def instances
-      InstanceMethods::instances
-    end
+    attr_accessor :instances
   end
 
   module InstanceMethods
     protected
-    @@instances = 0
-    def register_instance
-      @@instances += 1
-    end
 
-    def self.instances
-      @@instances
+    def register_instance
+      self.class.instances += 1
     end
   end
 
