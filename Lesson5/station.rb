@@ -3,7 +3,6 @@ require "./instances"
 class Station
   include Instances
   attr_reader :name, :trains
-  self.instances = []
 
   def initialize(name)
     @name = name

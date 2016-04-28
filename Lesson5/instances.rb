@@ -17,6 +17,7 @@ module Instances
     def add(instance)
       type = self.class
       while type.methods.include?(:instances)
+        type.instances ||= []
         type.instances << instance
         type = type.superclass
       end
