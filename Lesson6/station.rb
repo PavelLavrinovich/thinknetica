@@ -5,6 +5,8 @@ class Station
   include Instances
   attr_reader :name, :trains
 
+  NAME_PATTERN = /^[a-z]{3,}$/i
+
   def initialize(name)
     @name = name
     @trains = []
@@ -33,11 +35,7 @@ class Station
   protected
 
   def validate!
-    raise ValidationError, "Name must contains 3 letters a-z or more" if name !~ name_pattern
+    raise ValidationError, "Name must contains 3 letters a-z or more" if name !~ NAME_PATTERN
     true
-  end
-
-  def name_pattern
-    /^[a-z]{3,}$/i
   end
 end

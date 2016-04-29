@@ -6,6 +6,9 @@ class Train
   include Instances
   attr_reader :number, :type, :route, :carriages, :speed
 
+  NUMBER_PATTERN = /^[a-z\d]{3}-?[a-z\d]{2}$/i
+  TYPE_PATTERN = /^[a-z]{3,}$/i
+
   def initialize(number, type, carriages)
     @number = number
     @type = type
@@ -80,17 +83,9 @@ class Train
   end
 
   def validate!
-    raise ValidationError, "Wrong number" if number !~ number_pattern
-    raise ValidationError, "Type must contains 3 letters a-z or more" if type !~ type_pattern
+    raise ValidationError, "Wrong number" if number !~ NUMBER_PATTERN
+    raise ValidationError, "Type must contains 3 letters a-z or more" if type !~ TYPE_PATTERN
     true
-  end
-
-  def number_pattern
-    /^[a-z\d]{3}-?[a-z\d]{2}$/i
-  end
-
-  def type_pattern
-    /^[a-z]{3,}$/i
   end
 
   def at_start?
