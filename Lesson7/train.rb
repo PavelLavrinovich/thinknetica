@@ -34,6 +34,10 @@ class Train
     self.carriages.delete(carriage) if is_stopped?
   end
 
+  def each_carriage(&block)
+    block_given? ? carriages.each { |carriage| yield(carriage) } : carriages
+  end
+
   def route=(route)
     @route = route
     self.current_station_id = start_station_id

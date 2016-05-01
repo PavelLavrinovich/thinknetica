@@ -26,6 +26,10 @@ class Station
     trains.select { |train| train.type == type }
   end
 
+  def each_train(&block)
+    block_given? ? trains.each { |train| yield(train) } : trains
+  end
+
   def valid?
     validate!
   rescue
