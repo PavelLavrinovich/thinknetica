@@ -1,3 +1,5 @@
+require "./carriage_owerflowed_error"
+
 class CargoCarriage < Carriage
   attr_reader :capacity, :filled_capacity
 
@@ -7,7 +9,8 @@ class CargoCarriage < Carriage
   end
 
   def fill(capacity)
-    filled_capacity += capacity if empty_capacity <= capacity
+    validate!
+    filled_capacity += capacity
   end
 
   def empty_capacity
@@ -17,4 +20,9 @@ class CargoCarriage < Carriage
   private
 
   attr_writer :filled_capacity
+
+  def validate!(capacity)
+    raise CarriageOverflowedError, "There is only #{empty_capacity} capacity left" if empty_capacity < capacity
+    true
+  end
 end

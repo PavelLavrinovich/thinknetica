@@ -18,6 +18,8 @@ class TrainConsole
       case gets.chomp
       when "exit"
         break
+      when "create_test_data"
+        create_test_data
       when "create_station"
         create_station
       when "create_train"
@@ -41,6 +43,7 @@ class TrainConsole
   def help
     puts ""
     puts 'Input "exit" for exit'
+    puts 'Input "create_test_data" for create test data'
     puts 'Input "create_station" for create a station'
     puts 'Input "create_train for create a train'
     puts 'Input "add_carriage" for add a carriage'
@@ -50,10 +53,19 @@ class TrainConsole
     puts ""
   end
 
+  def create_test_data
+    5.times do |index|
+      create_station!("#{index} station")
+      create_train!("CAR-#{index}#{index}", "cargo", 5)
+      move_train!(index, index)
+    end
+  rescue ValidationError => e
+    puts e.message
+  end
+
   def create_station
     name = station_input
-    Station.new(name)
-    puts "Station with name: #{name} has been created."
+    create_station!(name)
   rescue ValidationError => e
     puts e.message
     retry
@@ -104,10 +116,12 @@ class TrainConsole
   end
 
   def display_stations
-    index = choose_station
-    station = Station.find(index)
-    puts "Station #{index}, Trains:"
-    puts station.trains unless station.nil?
+    Station.get_all do |station|
+      puts "Station: #{station.name}"
+      station.each_train do |train|
+        puts "Train, number: #{train.number}, type: #{train.type}, carriages: #{train.carriages.size}"
+      end
+    end
   end
 
   def unknown_command
@@ -139,6 +153,11 @@ class TrainConsole
     puts "Train with number #{number}, type #{type} has been created with #{carriages_count} carriages"
   end
 
+  def create_station!(name)
+    Station.new(name)
+    puts "Station with name: #{name} has been created."
+  end
+
   def station_input
     puts "Input name of the station"
     gets.chomp
@@ -168,12 +187,12 @@ class TrainConsole
     end
   end
 
-  def get_carriage(type)
+  def get_carriage(type, capacity = 100)
     case type
     when "cargo"
-      CargoCarriage.new
+      CargoCarriage.new(capacity)
     when "passanger"
-      PassangerCarriage.new
+      PassangerCarriage.new(capacity)
     else
       Carriage.new
     end

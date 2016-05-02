@@ -1,3 +1,5 @@
+require "./carriage_owerflowed_error"
+
 class PassangerCarriage < Carriage
   attr_reader :places, :taked_places
 
@@ -7,7 +9,8 @@ class PassangerCarriage < Carriage
   end
 
   def take_a_place
-    self.taked_places += 1 unless free_places.zero?
+    validate!
+    self.taked_places += 1
   end
 
   def free_places
@@ -17,4 +20,9 @@ class PassangerCarriage < Carriage
   private
 
   attr_writer :taked_places
+
+  def validate!
+    raise CarriageOverflowedError, "All places have been taken" if free_places.zero?
+    true
+  end
 end
