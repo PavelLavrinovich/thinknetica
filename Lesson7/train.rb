@@ -35,7 +35,7 @@ class Train
   end
 
   def each_carriage(&block)
-    block_given? ? carriages.each { |carriage| yield(carriage) } : carriages
+    block_given? ? carriages.each_with_index { |carriage, index| yield(carriage, index) } : carriages
   end
 
   def route=(route)

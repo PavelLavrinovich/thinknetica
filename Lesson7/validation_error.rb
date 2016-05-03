@@ -1,3 +1,2 @@
 class ValidationError < RuntimeError
-
 end
