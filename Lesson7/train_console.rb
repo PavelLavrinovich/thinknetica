@@ -285,7 +285,7 @@ class TrainConsole
     when "passanger"
       PassangerCarriage.new(capacity)
     else
-      Carriage.new
+      Carriage.new(capacity)
     end
   end
 
