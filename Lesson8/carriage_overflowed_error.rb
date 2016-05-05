@@ -1,0 +1,2 @@
+class CarriageOverflowedError < RuntimeError
+end
