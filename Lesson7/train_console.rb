@@ -1,13 +1,13 @@
-require "./station"
-require "./train"
-require "./cargo_train"
-require "./passanger_train"
-require "./carriage"
-require "./cargo_carriage"
-require "./passanger_carriage"
-require "./route"
-require "./validation_error"
-require "./carriage_overflowed_error"
+require './station'
+require './train'
+require './cargo_train'
+require './passanger_train'
+require './carriage'
+require './cargo_carriage'
+require './passanger_carriage'
+require './route'
+require './validation_error'
+require './carriage_overflowed_error'
 
 class TrainConsole
   attr_reader :trains
@@ -19,29 +19,29 @@ class TrainConsole
       help
 
       case gets.chomp
-      when "exit"
+      when 'exit'
         break
-      when "create_test_data"
+      when 'create_test_data'
         create_test_data
-      when "create_station"
+      when 'create_station'
         create_station
-      when "create_train"
+      when 'create_train'
         create_train
-      when "add_carriage"
+      when 'add_carriage'
         add_carriage
-      when "delete_carriage"
+      when 'delete_carriage'
         delete_carriage
-      when "move_train"
+      when 'move_train'
         move_train
-      when "display_stations"
+      when 'display_stations'
         display_stations
-      when "display_station_trains"
+      when 'display_station_trains'
         display_station_trains
-      when "display_train_carriages"
+      when 'display_train_carriages'
         display_train_carriages
-      when "take_a_place"
+      when 'take_a_place'
         take_a_place
-      when "fill_capacity"
+      when 'fill_capacity'
         fill_capacity
       else
         unknown_command
@@ -52,7 +52,7 @@ class TrainConsole
   private # TrainConsole hasn't subclasses, helper methods
 
   def help
-    puts ""
+    puts ''
     puts 'Input "exit" for exit'
     puts 'Input "create_test_data" for create test data'
     puts 'Input "create_station" for create a station'
@@ -65,14 +65,14 @@ class TrainConsole
     puts 'Input "display_train_carriages" for display the carriages of the train'
     puts 'Input "take_a_place" for take a place'
     puts 'Input "fill_capacity" for fill some capacity'
-    puts ""
+    puts ''
   end
 
   def create_test_data
     5.times do |index|
-      create_station!("Station")
-      create_train!("CAR-#{index}#{index}", "cargo", 5)
-      create_train!("PAS-#{index}#{index}", "passanger", 3)
+      create_station!('Station')
+      create_train!("CAR-#{index}#{index}", 'cargo', 5)
+      create_train!("PAS-#{index}#{index}", 'passanger', 3)
       move_train!(2 * index, index)
       move_train!(2 * index + 1, index)
     end
@@ -100,14 +100,14 @@ class TrainConsole
     index = choose_train
 
     if check_train_index?(index)
-      puts "Wrong index"
+      puts 'Wrong index'
     else
       train = Train.find(index)
       capacity = carriage_input
       carriage = get_carriage(train.type, capacity)
 
       train.add_carriage(carriage)
-      puts "Carriage has been added"
+      puts 'Carriage has been added'
     end
   end
 
@@ -115,10 +115,10 @@ class TrainConsole
     index = choose_train
 
     if check_train_index?(index)
-      puts "Wrong index"
+      puts 'Wrong index'
     else
       Train.find(index).delete_carriage
-      puts "Carriage has been deleted"
+      puts 'Carriage has been deleted'
     end
   end
 
@@ -126,7 +126,7 @@ class TrainConsole
     train_index = choose_train
 
     if check_train_index?(train_index)
-      puts "Wrong index"
+      puts 'Wrong index'
     else
       station_index = choose_station
       move_train!(train_index, station_index) unless check_station_index?(station_index)
@@ -144,13 +144,13 @@ class TrainConsole
     index = choose_station
 
     if check_station_index?(index)
-      puts "Wrong index"
+      puts 'Wrong index'
     else
       display_station_trains!(Station.find(index))
     end
   end
 
-  def display_station_trains!(station, &block)
+  def display_station_trains!(station)
     station.each_train do |train|
       puts "Train, number: #{train.number}, type: #{train.type}, carriages count: #{train.carriages.size}"
       yield(train) if block_given?
@@ -161,7 +161,7 @@ class TrainConsole
     index = choose_train
 
     if check_train_index?(index)
-      puts "Wrong index"
+      puts 'Wrong index'
     else
       display_train_carriages!(Train.find(index))
     end
@@ -196,7 +196,7 @@ class TrainConsole
 
   def choose_station
     stations = Station.get_all
-    puts "Your stations"
+    puts 'Your stations'
     puts stations
 
     puts "Choose station by index from 0 to #{stations.size - 1}"
@@ -205,7 +205,7 @@ class TrainConsole
 
   def choose_train
     trains = Train.get_all
-    puts "Your trains:"
+    puts 'Your trains:'
     puts trains
 
     puts "Choose train by index from 0 to #{trains.size - 1}"
@@ -214,20 +214,20 @@ class TrainConsole
 
   def choose_cargo_carriage
     carriages = CargoCarriage.get_all
-    puts "Your carriages:"
+    puts 'Your carriages:'
     puts carriages
     puts "Choose cargo carriage by index from 0 to #{carriages.size - 1}"
     gets.chomp.to_i
   end
 
   def input_capacity
-    puts "Input capacity"
+    puts 'Input capacity'
     gets.chomp.to_i
   end
 
   def choose_passanger_carriage
     carriages = PassangerCarriage.get_all
-    puts "Your carriages:"
+    puts 'Your carriages:'
     puts carriages
     puts "Choose cargo carriage by index from 0 to #{carriages.size - 1}"
     gets.chomp.to_i
@@ -245,33 +245,33 @@ class TrainConsole
   end
 
   def station_input
-    puts "Input name of the station"
+    puts 'Input name of the station'
     gets.chomp
   end
 
   def train_input
-    puts "Input number of the train"
+    puts 'Input number of the train'
     number = gets.chomp
 
     puts 'Input type("cargo" for cargo or "passanger" for passanger) of the train'
     type = gets.chomp
 
-    puts "Input count of carriages"
+    puts 'Input count of carriages'
     carriages_count = gets.chomp.to_i
 
-    return number, type, carriages_count
+    [number, type, carriages_count]
   end
 
   def carriage_input
-    puts "Input capacity of the carriage"
+    puts 'Input capacity of the carriage'
     gets.chomp.to_i
   end
 
   def get_train(number, type)
     case type
-    when "cargo"
+    when 'cargo'
       CargoTrain.new(number, [])
-    when "passanger"
+    when 'passanger'
       PassangerTrain.new(number, [])
     else
       Train.new(number, type, [])
@@ -280,9 +280,9 @@ class TrainConsole
 
   def get_carriage(type, capacity = DEFAULT_CARRIAGE_CAPACITY)
     case type
-    when "cargo"
+    when 'cargo'
       CargoCarriage.new(capacity)
-    when "passanger"
+    when 'passanger'
       PassangerCarriage.new(capacity)
     else
       Carriage.new(capacity)
