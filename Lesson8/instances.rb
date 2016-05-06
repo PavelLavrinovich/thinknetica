@@ -1,16 +1,19 @@
+# Module for instances storage
 module Instances
+  # Module for work with methods of classes
   module ClassMethods
     attr_accessor :instances
 
-    def get_all
-      self.instances
+    def all
+      instances
     end
 
     def find(id)
-      self.instances[id]
+      instances[id]
     end
   end
 
+  # Module for work with methods of instances
   module InstanceMethods
     protected
 

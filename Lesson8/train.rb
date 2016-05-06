@@ -1,13 +1,13 @@
-require "./manufacturer"
-require "./validation_error"
+require './manufacturer'
+require './validation_error'
+require './train_constants'
 
+# Class for work with trains
 class Train
   include Manufacturer
   include Instances
+  include TrainConstants
   attr_reader :number, :type, :route, :carriages, :speed
-
-  NUMBER_PATTERN = /^[a-z\d]{3}-?[a-z\d]{2}$/i
-  TYPE_PATTERN = /^[a-z]{3,}$/i
 
   def initialize(number, type, carriages)
     @number = number
@@ -27,15 +27,19 @@ class Train
   end
 
   def add_carriage(carriage)
-    self.carriages << carriage if is_stopped? && is_correct_carriage?(carriage)
+    carriages << carriage if stopped? && correct_carriage?(carriage)
   end
 
-  def delete_carriage(carriage = self.carriages.last)
-    self.carriages.delete(carriage) if is_stopped?
+  def delete_carriage(carriage = carriages.last)
+    carriages.delete(carriage) if stopped?
   end
 
-  def each_carriage(&block)
-    block_given? ? carriages.each_with_index { |carriage, index| yield(carriage, index) } : carriages
+  def each_carriage
+    if block_given?
+      carriages.each_with_index { |carriage, index| yield(carriage, index) }
+    else
+      carriages
+    end
   end
 
   def route=(route)
@@ -44,11 +48,11 @@ class Train
   end
 
   def go
-    route.stations.each { |station| go_to_the_next_station } if at_start?
+    route.stations.each { go_to_the_next_station } if at_start?
   end
 
   def go_to_the_next_station
-    go_to_the_next_station! if has_next?
+    go_to_the_next_station! if next?
   end
 
   def current_station
@@ -56,14 +60,14 @@ class Train
   end
 
   def next_station
-    route.stations[current_station_id + 1] if has_next?
+    route.stations[current_station_id + 1] if next?
   end
 
   def previous_station
-    route.stations[current_station_id - 1] if has_previous?
+    route.stations[current_station_id - 1] if previous?
   end
 
-  def is_stopped?
+  def stopped?
     speed.zero?
   end
 
@@ -73,7 +77,7 @@ class Train
     false
   end
 
-  protected # Train has sublasses, all methods are just helpers for main methods
+  protected
 
   attr_accessor :current_station_id # Inner system field
   attr_writer :speed # You should change speed only by methods
@@ -87,8 +91,10 @@ class Train
   end
 
   def validate!
-    raise ValidationError, "Wrong number" if number !~ NUMBER_PATTERN
-    raise ValidationError, "Type must contains 3 letters a-z or more" if type !~ TYPE_PATTERN
+    raise ValidationError, 'Wrong number' if number !~ NUMBER_PATTERN
+    if type !~ TYPE_PATTERN
+      raise ValidationError, 'Type must contains 3 letters a-z or more'
+    end
     true
   end
 
@@ -96,40 +102,15 @@ class Train
     current_station_id.zero?
   end
 
-  def has_next?
+  def next?
     current_station_id < route.stations.size - 1
   end
 
-  def has_previous?
+  def previous?
     current_station_id > 0
   end
 
-  def is_correct_carriage?(carriage)
-    carriage_type =
-      case self.type
-      when "cargo"
-        CargoCarriage
-      when "passanger"
-        PassangerCarriage
-      else
-        Carriage
-      end
-    carriage.class == carriage_type
-  end
-
-  def initial_speed
-    0
-  end
-
-  def stop_speed
-    0
-  end
-
-  def gain_speed_difference
-    10
-  end
-
-  def start_station_id
-    0
+  def correct_carriage?(carriage)
+    carriage.class == (CARRIAGE_TYPES[type.to_sym] || Carriage)
   end
 end

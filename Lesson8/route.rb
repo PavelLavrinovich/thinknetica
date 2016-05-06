@@ -1,3 +1,4 @@
+# Class for work with routes
 class Route
   attr_reader :stations
 

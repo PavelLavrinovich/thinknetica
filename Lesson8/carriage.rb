@@ -1,8 +1,9 @@
-require "./manufacturer"
-require "./instances"
-require "./carriage_overflowed_error"
-require "./validation_error"
+require './manufacturer'
+require './instances'
+require './carriage_overflowed_error'
+require './validation_error'
 
+# Class for work with carriages
 class Carriage
   include Manufacturer
   include Instances
@@ -35,7 +36,9 @@ class Carriage
   end
 
   def validate_free!(capacity)
-    raise CarriageOverflowedError, "Carriage has been overflowed" if free_space < capacity
+    if free_space < capacity
+      raise CarriageOverflowedError, 'Carriage has been overflowed'
+    end
     true
   end
 end
