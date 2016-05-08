@@ -1,12 +1,16 @@
 require './instances'
-require './validation_error'
+require './validation'
 
 # Class for work with stations
 class Station
   include Instances
-  attr_reader :name, :trains
+  include Validation
 
   NAME_PATTERN = /^[a-z]{3,}$/i
+
+  attr_reader :name, :trains
+
+  validate :name, :format, NAME_PATTERN
 
   def initialize(name)
     @name = name
@@ -29,20 +33,5 @@ class Station
 
   def each_train
     block_given? ? trains.each { |train| yield(train) } : trains
-  end
-
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
-  protected
-
-  def validate!
-    if name !~ NAME_PATTERN
-      raise ValidationError, 'Name must contains 3 letters a-z or more'
-    end
-    true
   end
 end

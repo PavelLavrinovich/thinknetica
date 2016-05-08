@@ -1,13 +1,18 @@
 require './manufacturer'
-require './validation_error'
 require './train_constants'
+require './validation'
 
 # Class for work with trains
 class Train
   include Manufacturer
   include Instances
   include TrainConstants
+  include Validation
+
   attr_reader :number, :type, :route, :carriages, :speed
+
+  validate :number, :format, NUMBER_PATTERN
+  validate :type, :format, TYPE_PATTERN
 
   def initialize(number, type, carriages)
     @number = number
@@ -71,12 +76,6 @@ class Train
     speed.zero?
   end
 
-  def valid?
-    validate!
-  rescue
-    false
-  end
-
   protected
 
   attr_accessor :current_station_id # Inner system field
@@ -88,14 +87,6 @@ class Train
     self.current_station_id += 1
     current_station.take(self) if current_station
     stop
-  end
-
-  def validate!
-    raise ValidationError, 'Wrong number' if number !~ NUMBER_PATTERN
-    if type !~ TYPE_PATTERN
-      raise ValidationError, 'Type must contains 3 letters a-z or more'
-    end
-    true
   end
 
   def at_start?
