@@ -21,14 +21,14 @@ module Accessors
 
     def define_methods(name)
       sym_name = "@#{name}".to_sym
+      sym_history = "@#{name}_history".to_sym
       define_method(name) { instance_variable_get sym_name }
       define_method("#{name}=") do |value|
-        self.history ||= {}
-        self.history[sym_name] ||= []
-        self.history[sym_name] << value
+        instance_variable_set(sym_history, []) if empty_history?(sym_history)
+        instance_variable_get(sym_history).send(:<<, value)
         instance_variable_set sym_name, value
       end
-      define_method("#{name}_history") { self.history[sym_name] }
+      define_method("#{name}_history") { instance_variable_get(sym_history) }
     end
   end
 
@@ -36,7 +36,9 @@ module Accessors
   module InstanceMethods
     protected
 
-    attr_accessor :history
+    def empty_history?(sym_history)
+      instance_variable_get(sym_history).nil?
+    end
   end
 
   def self.included(receiver)
